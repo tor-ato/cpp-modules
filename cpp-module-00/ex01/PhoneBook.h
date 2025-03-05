@@ -24,12 +24,17 @@ private:
 	int contact_count;
 	int overwrite_index;
 
+	void printHeader() const;
+	void printPhonebookRow(int row) const;
+	std::string truncateString(const std::string &str) const;
+
 public:
 	PhoneBook();
 
 	int getContactCount() const;
 
 	void addContact(const Contact &);
-	void printPhonebook() const;
+	void printPhoneBook() const;
+	void printContact(int i);
 };
 #endif

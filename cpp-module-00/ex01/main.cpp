@@ -13,6 +13,7 @@
 #include "PhoneBook.h"
 #include <iostream>
 #include <cstdlib>
+#include <limits>
 
 typedef enum {
 	CMD_UNKNOWN,
@@ -52,7 +53,7 @@ static command_t getCommand() {
 static void handleCommandAdd(PhoneBook &phone_book) {
 	std::string first_name = getlinePrompt("Enter first name: ");
 	std::string last_name = getlinePrompt("Enter last name: ");
-	std::string nickname = getlinePrompt("Enter nickname:");
+	std::string nickname = getlinePrompt("Enter nickname: ");
 	std::string phone_number = getlinePrompt("Enter phone number: ");
 	std::string darkest_secret = getlinePrompt("Enter dakest secret: ");
 
@@ -64,16 +65,28 @@ static void handleCommandAdd(PhoneBook &phone_book) {
 	phone_book.addContact(contact);
 }
 
-// static void handleCommandSearch(PhoneBook &phone_book)
-// {
-// 	if (phone_book.getContactCount() == 0) {
-// 		std::cout << "Phone book is empty" << std::endl;
-// 		return;
-// 	}
-//
-// 	phone_book.printPhonebook();
-// }
-//
+static void handleCommandSearch(PhoneBook &phone_book)
+{
+    if (phone_book.getContactCount() == 0) {
+        std::cout << "Phone book is empty" << std::endl;
+        return;
+    }
+
+    phone_book.printPhoneBook();
+    
+    int index;
+    std::cout << "Enter an index: ";
+    std::cin >> index;
+    if (std::cin.fail() || std::cin.eof()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid index" << std::endl;
+        return;
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	phone_book.printContact(index);
+}
+
 int main() {
 	PhoneBook phone_book;
 
@@ -86,7 +99,7 @@ int main() {
 				handleCommandAdd(phone_book);
 				break;
 			case CMD_SEARCH:
-				// handle_command_search(phone_book);
+				handleCommandSearch(phone_book);
 				break;
 			case CMD_EXIT:
 				exit_flag = true;

@@ -6,7 +6,7 @@
 /*   By: tkitahar <tkitahar@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:14:39 by tkitahar          #+#    #+#             */
-/*   Updated: 2025/03/04 20:52:41 by tkitahar         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:46:09 by tkitahar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,15 @@ public:
 	Contact(const std::string &first_name, const std::string &last_name,
 			const std::string &nickname, const std::string &phone_number,
 			const std::string &darkest_secret);
-	
-	Contact &operator=(const Contact &new_contact);
+
+	Contact &operator=(const Contact &other_contact);
+
+	std::string getFirstName() const;
+	std::string getLastName() const;
+	std::string getNickName() const;
+
 	bool isFullContact() const;
+	void printContact() const;
 };
 
 #endif

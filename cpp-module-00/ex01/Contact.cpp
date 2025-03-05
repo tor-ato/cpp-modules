@@ -6,11 +6,12 @@
 /*   By: tkitahar <tkitahar@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:14:12 by tkitahar          #+#    #+#             */
-/*   Updated: 2025/03/04 20:54:32 by tkitahar         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:48:19 by tkitahar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Contact.h"
+#include <iostream>
 
 Contact::Contact() {}
 
@@ -36,10 +37,28 @@ Contact &Contact::operator=(const Contact &new_contact) {
 	return *this;
 }
 
+std::string Contact::getFirstName() const {
+	return this->first_name;
+}
+
+std::string Contact::getLastName() const {
+	return this->last_name;
+}
+
+std::string Contact::getNickName() const {
+	return this->nickname;
+}
+
+void Contact::printContact() const {
+	std::cout << "first name: " << this->first_name << std::endl;
+	std::cout << "last name: " << this->first_name << std::endl;
+	std::cout << "nick name: " << this->first_name << std::endl;
+	std::cout << "phone number: " << this->first_name << std::endl;
+	std::cout << "darkest secret: " << this->first_name << std::endl;
+}
 
 bool Contact::isFullContact() const {
 	return  !this->first_name.empty() && !this->last_name.empty() &&
 			!this->phone_number.empty() && !this->nickname.empty() &&
 			!this->darkest_secret.empty();
 }
-
