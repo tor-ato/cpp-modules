@@ -1,0 +1,19 @@
+[
+    {
+        "arguments": [
+            "c++",
+            "-c",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-std=c++98",
+            "-isystem",
+            "/usr/include/c++/11",
+            "-isystem",
+            "/usr/include/x86_64-linux-gnu/c++/11",
+            "-o",
+        ],
+        "directory": "/home/tkitahar/projects/cpp-modules/cpp-module-00",
+        "file": "main.cpp"
+    }
+]
