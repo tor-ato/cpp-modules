@@ -51,10 +51,10 @@ std::string Contact::getNickName() const {
 
 void Contact::printContact() const {
 	std::cout << "first name: " << this->first_name << std::endl;
-	std::cout << "last name: " << this->first_name << std::endl;
-	std::cout << "nick name: " << this->first_name << std::endl;
-	std::cout << "phone number: " << this->first_name << std::endl;
-	std::cout << "darkest secret: " << this->first_name << std::endl;
+	std::cout << "last name: " << this->last_name << std::endl;
+	std::cout << "nick name: " << this->nickname << std::endl;
+	std::cout << "phone number: " << this->phone_number << std::endl;
+	std::cout << "darkest secret: " << this->darkest_secret << std::endl;
 }
 
 bool Contact::isFullContact() const {
