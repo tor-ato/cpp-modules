@@ -3,7 +3,8 @@ SRC := megaphone.cpp
 OBJ := $(SRC:.cpp=.o)
 
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98
+LSPFLAGS := -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11
 
 .PHONY: all
 all: $(NAME)
