@@ -82,7 +82,7 @@ int PhoneBook::getContactCount() const {
 }
 
 void PhoneBook::printContact(int i) {
-	if (i < 0 || i>= PhoneBook::maxContacts || i >= this->contact_count) {
+	if (i < 0 || i >= this->contact_count) {
 		std::cout << "Invalid index" << std::endl;
 		return;
 	}
