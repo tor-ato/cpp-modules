@@ -1,11 +1,11 @@
 #include <iostream>
 #include <climits>
-#include "ScavTrap.h"
+#include "FragTrap.h"
 
 int main() {
 	std::cout << std::endl;
 
-	ScavTrap player("player");
+	FragTrap player("player");
 
 	std::cout << "[simple attack]" << std::endl;
 	player.attack("enemy");
@@ -29,13 +29,13 @@ int main() {
 
 	std::cout << std::endl;
 
-	std::cout << "[guard gate]" << std::endl;
-	player.guardGate();
+	std::cout << "[high five]" << std::endl;
+	player.highFivesGuys();
 
 	std::cout << std::endl;
 
 	// std::cout << "[attack without energy]" << std::endl;
-	// int remainingEnergy = 45;
+	// int remainingEnergy = 95;
 	// while (remainingEnergy--) {
 	// 	player.attack("enemy");
 	// }
@@ -48,8 +48,8 @@ int main() {
 	//
 	// std::cout << std::endl;
 	//
-	// std::cout << "[guard gate without energy]" << std::endl;
-	// player.guardGate();
+	// std::cout << "[high five without energy]" << std::endl;
+	// player.highFivesGuys();
 	//
 	// std::cout << std::endl;
 
@@ -73,8 +73,8 @@ int main() {
 
 	std::cout << std::endl;
 
-	std::cout << "[guard gate after death]" << std::endl;
-	player.guardGate();
+	std::cout << "[high five after death]" << std::endl;
+	player.highFivesGuys();
 
 	std::cout << std::endl;
 }
