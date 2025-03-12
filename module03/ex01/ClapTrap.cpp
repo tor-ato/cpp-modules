@@ -25,7 +25,7 @@ ClapTrap::~ClapTrap() {
 
 ClapTrap &ClapTrap::operator=(const ClapTrap &clapTrap) {
 	std::cout << "CrapTrap copy assignment operator called" << std::endl;
-	if (this == &clapTrap) {
+	if (this != &clapTrap) {
 		this->name_ = clapTrap.name_;
 		this->hitPoints_ = clapTrap.hitPoints_;
 		this->energyPoints_ = clapTrap.energyPoints_;
