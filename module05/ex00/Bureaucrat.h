@@ -6,8 +6,8 @@
 
 class Bureaucrat {
 private:
-	static const int maxGrade_ = 150;
-	static const int minGrade_ = 1;
+	static const int maxGrade_ = 1;
+	static const int minGrade_ = 150;
 	const std::string name_;
 	int grade_;
 
@@ -16,7 +16,7 @@ private:
 	static bool isTooLowGrade(int grade);
 
 public:
-	class GradeTooHighException: public std::exception {
+	class GradeTooHighException : public std::exception {
 		virtual const char *what() const throw();
 	};
 
@@ -49,4 +49,4 @@ public:
 
 std::ostream &operator<<(std::ostream &os, const Bureaucrat &bureaucrat);
 
-#endif
+#endif //CPP_MODULES_BUREAUCRAT_H

@@ -10,9 +10,10 @@ Bureaucrat::Bureaucrat(const std::string &name, int grade) : name_(name) {
 
 Bureaucrat::~Bureaucrat() {}
 
-// other.grade_ is valid in setGrade()
+// other.grade_ must be valid
 Bureaucrat::Bureaucrat(const Bureaucrat &other) : name_(other.name_), grade_(other.grade_) {}
 
+// name_ is const, so we can't assign it
 Bureaucrat &Bureaucrat::operator=(const Bureaucrat &other) {
 	if (this != &other) {
 		grade_ = other.grade_;
@@ -37,23 +38,25 @@ void Bureaucrat::setGrade(int grade) {
 }
 
 bool Bureaucrat::isTooHighGrade(int grade) {
-	return grade > Bureaucrat::maxGrade_;
+	return grade < Bureaucrat::maxGrade_;
 }
 
 bool Bureaucrat::isTooLowGrade(int grade) {
-	return grade < Bureaucrat::minGrade_;
+	return grade > Bureaucrat::minGrade_;
 }
 
+// grade_ is valid, so grade_ - 1 must not overflow
 void Bureaucrat::incrementGrade() {
-	if (Bureaucrat::isTooHighGrade(this->getGrade() + 1))
+	if (Bureaucrat::isTooHighGrade(this->getGrade() - 1))
 		throw GradeTooHighException();
-	++grade_;
+	--grade_;
 }
 
+// grade_ is valid, so grade_ + 1 must not overflow
 void Bureaucrat::decrementGrade() {
-	if (Bureaucrat::isTooLowGrade(this->getGrade() - 1))
+	if (Bureaucrat::isTooLowGrade(this->getGrade() + 1))
 		throw GradeTooLowException();
-	--grade_;
+	++grade_;
 }
 
 const char *Bureaucrat::GradeTooHighException::what() const throw() {
@@ -65,6 +68,6 @@ const char *Bureaucrat::GradeTooLowException::what() const throw() {
 }
 
 std::ostream &operator<<(std::ostream &os, const Bureaucrat &bureaucrat) {
-	os << bureaucrat.getName() << ", bureacrat grade "  << bureaucrat.getGrade();
+	os << bureaucrat.getName() << ", bureaucrat grade " << bureaucrat.getGrade();
 	return os;
 }
