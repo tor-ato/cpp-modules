@@ -49,4 +49,4 @@ public:
 
 std::ostream &operator<<(std::ostream &os, const Bureaucrat &bureaucrat);
 
-#endif //CPP_MODULES_BUREAUCRAT_H
+#endif

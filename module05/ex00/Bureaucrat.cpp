@@ -10,10 +10,8 @@ Bureaucrat::Bureaucrat(const std::string &name, int grade) : name_(name) {
 
 Bureaucrat::~Bureaucrat() {}
 
-// other.grade_ must be valid
 Bureaucrat::Bureaucrat(const Bureaucrat &other) : name_(other.name_), grade_(other.grade_) {}
 
-// name_ is const, so we can't assign it
 Bureaucrat &Bureaucrat::operator=(const Bureaucrat &other) {
 	if (this != &other) {
 		grade_ = other.grade_;
@@ -45,14 +43,12 @@ bool Bureaucrat::isTooLowGrade(int grade) {
 	return grade > Bureaucrat::minGrade_;
 }
 
-// grade_ is valid, so grade_ - 1 must not overflow
 void Bureaucrat::incrementGrade() {
 	if (Bureaucrat::isTooHighGrade(this->getGrade() - 1))
 		throw GradeTooHighException();
 	--grade_;
 }
 
-// grade_ is valid, so grade_ + 1 must not overflow
 void Bureaucrat::decrementGrade() {
 	if (Bureaucrat::isTooLowGrade(this->getGrade() + 1))
 		throw GradeTooLowException();

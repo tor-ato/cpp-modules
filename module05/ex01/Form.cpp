@@ -2,18 +2,18 @@
 #include "Bureaucrat.h"
 
 Form::Form() : name_("anonymous"), gradeToSign_(Bureaucrat::minGrade_),
-				gradeToExcute_(Bureaucrat::minGrade_), isSigned_(false) {}
+				gradeToExecute_(Bureaucrat::minGrade_), isSigned_(false) {}
 
-Form::Form(const std::string &name, int gradeToSign, int gradeToExecut) 
-			: name_(name), gradeToSign_(gradeToSign), gradeToExcute_(gradeToExecut), isSigned_(false) {
-	if (isTooHighGrade(gradeToSign) || isTooHighGrade(gradeToExecut))
+Form::Form(const std::string &name, int gradeToSign, int gradeToExecute) 
+			: name_(name), gradeToSign_(gradeToSign), gradeToExecute_(gradeToExecute), isSigned_(false) {
+	if (isTooHighGrade(gradeToSign) || isTooHighGrade(gradeToExecute))
 		throw GradeTooHighException();
-	if (isToLowGrade(gradeToSign) || isToLowGrade(gradeToExecut))
+	if (isToLowGrade(gradeToSign) || isToLowGrade(gradeToExecute))
 		throw GradeTooLowException();
 }
 
 Form::Form(const Form &other) : name_(other.name_), gradeToSign_(other.gradeToSign_),
-				gradeToExcute_(other.gradeToExcute_), isSigned_(other.isSigned_) {}
+				gradeToExecute_(other.gradeToExecute_), isSigned_(other.isSigned_) {}
 
 Form &Form::operator=(const Form &other) {
 	if (this != &other) {
@@ -33,7 +33,7 @@ int Form::getGradeToSign() const {
 }
 
 int Form::getGradeToExecute() const {
-	return gradeToExcute_;
+	return gradeToExecute_;
 }
 
 bool Form::isSigned() const {
@@ -56,8 +56,8 @@ bool Form::isEnoughGradeToSign(int grade) const {
 	return grade <= gradeToSign_;
 }
 
-bool Form::isEnoughGradeToExcute(int grade) const {
-	return grade <= gradeToExcute_;
+bool Form::isEnoughGradeToExecute(int grade) const {
+	return grade <= gradeToExecute_;
 }
 
 void Form::beSigned(const Bureaucrat &bureaucrat) {
@@ -76,7 +76,7 @@ const char *Form::GradeTooLowException::what() const throw() {
 
 std::ostream &operator<<(std::ostream &os, const Form &form) {
 	os << "Form " << form.getName() << " requires grade " << form.getGradeToSign()
-		<< " to sign and grade " << form.getGradeToExecute() << " to excute";
+		<< " to sign and grade " << form.getGradeToExecute() << " to execute";
 	if (form.isSigned())
 		os << " and is signed";
 	else

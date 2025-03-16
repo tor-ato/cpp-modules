@@ -2,10 +2,10 @@
 #include "Bureaucrat.h"
 
 AForm::AForm() : name_("anonymous"), gradeToSign_(Bureaucrat::minGrade_),
-				gradeToExcute_(Bureaucrat::minGrade_), isSigned_(false) {}
+				gradeToExecute_(Bureaucrat::minGrade_), isSigned_(false) {}
 
 AForm::AForm(const std::string &name, int gradeToSign, int gradeToExecut) 
-			: name_(name), gradeToSign_(gradeToSign), gradeToExcute_(gradeToExecut), isSigned_(false) {
+			: name_(name), gradeToSign_(gradeToSign), gradeToExecute_(gradeToExecut), isSigned_(false) {
 	if (isTooHighGrade(gradeToSign) || isTooHighGrade(gradeToExecut))
 		throw GradeTooHighException();
 	if (isToLowGrade(gradeToSign) || isToLowGrade(gradeToExecut))
@@ -13,7 +13,7 @@ AForm::AForm(const std::string &name, int gradeToSign, int gradeToExecut)
 }
 
 AForm::AForm(const AForm &other) : name_(other.name_), gradeToSign_(other.gradeToSign_),
-				gradeToExcute_(other.gradeToExcute_), isSigned_(other.isSigned_) {}
+				gradeToExecute_(other.gradeToExecute_), isSigned_(other.isSigned_) {}
 
 AForm &AForm::operator=(const AForm &other) {
 	if (this != &other) {
@@ -33,7 +33,7 @@ int AForm::getGradeToSign() const {
 }
 
 int AForm::getGradeToExecute() const {
-	return gradeToExcute_;
+	return gradeToExecute_;
 }
 
 bool AForm::isSigned() const {
@@ -56,8 +56,8 @@ bool AForm::isEnoughGradeToSign(int grade) const {
 	return grade <= gradeToSign_;
 }
 
-bool AForm::isEnoughGradeToExcute(int grade) const {
-	return grade <= gradeToExcute_;
+bool AForm::isEnoughGradeToExecute(int grade) const {
+	return grade <= gradeToExecute_;
 }
 
 void AForm::beSigned(const Bureaucrat &bureaucrat) {

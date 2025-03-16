@@ -19,7 +19,7 @@ public:
 
 	Form();
 
-	Form(const std::string &name, int gradeToSign, int gradeToExcute);
+	Form(const std::string &name, int gradeToSign, int gradeToExecute);
 
 	Form(const Form &other);
 
@@ -40,7 +40,7 @@ public:
 private:
 	const std::string name_;
 	const int gradeToSign_;
-	const int gradeToExcute_;
+	const int gradeToExecute_;
 	bool isSigned_;
 
 	void setIsSigned(bool isSigned);
@@ -51,7 +51,7 @@ private:
 
 	bool isEnoughGradeToSign(int grade) const;
 
-	bool isEnoughGradeToExcute(int grade) const;
+	bool isEnoughGradeToExecute(int grade) const;
 };
 
 std::ostream &operator<<(std::ostream &os, const Form &form);

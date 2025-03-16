@@ -24,7 +24,7 @@ public:
 
 	AForm();
 
-	AForm(const std::string &name, int gradeToSign, int gradeToExcute);
+	AForm(const std::string &name, int gradeToSign, int gradeToExecute);
 
 	AForm(const AForm &other);
 
@@ -44,14 +44,14 @@ public:
 
 	bool isEnoughGradeToSign(int grade) const;
 	
-	bool isEnoughGradeToExcute(int grade) const;
+	bool isEnoughGradeToExecute(int grade) const;
 
 	virtual void execute(const Bureaucrat &excutor) const = 0;
 
 private:
 	const std::string name_;
 	const int gradeToSign_;
-	const int gradeToExcute_;
+	const int gradeToExecute_;
 	bool isSigned_;
 
 	void setIsSigned(bool isSigned);

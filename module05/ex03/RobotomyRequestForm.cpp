@@ -26,7 +26,7 @@ const std::string &RobotomyRequestForm::getTarget() const {
 void RobotomyRequestForm::execute(const Bureaucrat &executor) const {
 	if (!isSigned())
 		throw FormNotSignedException();
-	if (!isEnoughGradeToExcute(executor.getGrade()))
+	if (!isEnoughGradeToExecute(executor.getGrade()))
 		throw GradeTooLowException();
 
 	std::srand(std::time(NULL));
