@@ -5,6 +5,9 @@
 #include <stdint.h>
 
 class Serializer {
+private:
+	Serializer() {}
+
 public:
 	static uintptr_t serialize(Data *ptr);
 
