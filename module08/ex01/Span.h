@@ -35,8 +35,8 @@ public:
 
 private:
 	unsigned int N;
-	std::multiset<int> numbers_;
-	std::multiset<unsigned int> span_;
+	std::set<int> numbers_;
+	std::set<unsigned int> span_;
 };
 
 #endif
