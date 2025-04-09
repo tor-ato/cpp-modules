@@ -1,0 +1,154 @@
+#include "BitcoinExchange.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+BitcoinExchange::BitcoinExchange(const std::string &inputFilePath, const std::string &dataFilePath) : inputFilePath_(inputFilePath), dataFilePath_(dataFilePath) {
+	initExchangeRates();
+}
+
+void BitcoinExchange::run() {
+	std::ifstream file(inputFilePath_.c_str());
+	if (!file.is_open()) {
+		std::cerr << "failed to open file: " << inputFilePath_ << std::endl;
+		return;
+	}
+
+	std::string line;
+	while (std::getline(file, line)) {
+		if (line.empty())
+			continue;
+		try {
+			std::pair<std::string, float> p = parseInputLine(line);
+			std::string date = p.first;
+			float value = p.second;
+
+			if (value < 0) {
+				std::cerr << "Error: not a positive number" << std::endl;
+				continue;
+			}
+			if (value > 100) {
+				std::cerr << "Error: too large " << std::endl;
+				continue;
+			}
+
+			float rate;
+			if (exchangeRates_.find(date))
+
+		} catch (std::exception &e) {
+
+		}
+	}
+}
+
+void BitcoinExchange::initExchangeRates() {
+	std::ifstream file(dataFilePath_.c_str());
+	if (!file.is_open()) {
+		isValidData_ = false;
+		std::cerr << "failed to open file: " << inputFilePath_ << std::endl;
+		return ;
+	}
+
+	std::string line;
+	std::getline(file, line);
+
+	while(getline(file, line)) {
+		if ()
+	}
+}
+
+std::pair<std::string, float> BitcoinExchange::parseInputLine(const std::string &line) throw (std::runtime_error) {
+	std::pair<std::string, std::string> linePair = splitLinePair(line, '|');
+	std::string dateStr = trim(linePair.first);
+	std::string amountStr = trim(linePair.second);
+
+	if (!isValidDataStr(dateStr))
+		throw std::runtime_error("invalid date string: " + dateStr);
+	
+	float amount;
+	try {
+		amount = s2f(amountStr);
+	} catch (std::invalid_argument &e) {
+		throw std::runtime_error("invalid amount:" + amountStr);
+	}
+
+	return std::pair<std::string, float>(dateStr, amount);
+}
+
+bool BitcoinExchange::isValidDataStr(const std::string &dateStr) {
+	if (dateStr.length() != 10)
+		return false;
+	if (dateStr[4] != '-' || dateStr[7] != '-')
+		return false;
+
+	std::string yearStr = dateStr.substr(0, 4);
+	std::string monthStr = dateStr.substr(5, 2);
+	std::string dayStr = dateStr.substr(8);
+
+	int year, month, day;
+	try {
+		year = s2i(yearStr);
+		month = s2i(monthStr);
+		day = s2i(dayStr);
+	} catch (std::exception &e) {
+		return false;
+	}
+
+	if (month < 1 || month > 12)
+		return false;
+	if (day < 1 || day > 31)
+		return false;
+	if (month == 2) {
+		if (year % 4 == 0) {
+			if (day > 29)
+				return false;
+		} else {
+			if (day > 28)
+				return false;
+		}
+	} else if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+		return false;
+	}
+	return true;
+}
+
+int BitcoinExchange::s2i(const std::string &str) throw(std::invalid_argument) {
+	std::istringstream iss(str);
+	int i;
+	iss >> i;
+	if (iss.fail())
+		throw std::invalid_argument("invalid string to int conversion: " + str);
+	iss.get(); // should read nothing. read one char.
+	if (!iss.eof())
+		throw std::invalid_argument("invalid string to int conversion: " + str);
+	return i;
+}
+
+float BitcoinExchange::s2f(const std::string &str) throw(std::invalid_argument) {
+	std::istringstream iss(str);
+	float f;
+	iss >> f;
+	if (iss.fail())
+		throw std::invalid_argument("invalid string to float conversion: " + str);
+	iss.get(); // should read nothing. read one char.
+	if (!iss.eof())
+		throw std::invalid_argument("invalid string to float conversion: " + str);
+	return f;
+}
+
+static std::pair<const std::string, std::string> splitLinePair(const std::string &line, char delimiter) throw(std::runtime_error) {
+	std::string::size_type pos = line.find(delimiter);
+	if (pos == std::string::npos)
+		throw std::runtime_error("invalid line: " + line);
+	std::string first = line.substr(0, pos);
+	std::string second = line.substr(pos + 1);
+	return std::pair<std::string, std::string>(first, second);
+}
+
+std::string BitcoinExchange::trim(const std::string &str) {
+	std::string::size_type left = str.find_first_not_of("\t\n\v\f\r");
+	if (left == std::string::npos)
+		return "";
+	std::string::size_type right = str.find_last_not_of("\t\n\v\f\r");
+	return str.substr(left, right - left + 1);
+}

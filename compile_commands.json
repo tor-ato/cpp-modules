@@ -13,7 +13,7 @@
             "/usr/include/x86_64-linux-gnu/c++/11",
             "-o",
         ],
-        "directory": "/home/tkitahar/projects/cpp-modules/cpp-module-00",
+        "directory": "/home/tkitahar/projects/cpp-modules",
         "file": "main.cpp"
     }
 ]
