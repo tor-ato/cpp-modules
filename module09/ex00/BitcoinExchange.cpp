@@ -8,6 +8,10 @@ BitcoinExchange::BitcoinExchange(const std::string &inputFilePath, const std::st
 }
 
 void BitcoinExchange::run() {
+	if (!isValidData_) {
+		std::cerr << "database is corrupted" << std::endl;
+	}
+
 	std::ifstream file(inputFilePath_.c_str());
 	if (!file.is_open()) {
 		std::cerr << "failed to open file: " << inputFilePath_ << std::endl;
@@ -33,7 +37,16 @@ void BitcoinExchange::run() {
 			}
 
 			float rate;
-			if (exchangeRates_.find(date))
+			if (exchangeRates_.find(date) != exchangeRates_.end()) {
+				rate = exchangeRates_.at(date);
+			} else {
+				std::map<std::string, float>::iterator it = exchangeRates_.lower_bound(date);
+				if (it == exchangeRates_.end()) {
+					std::cerr << "Error: there is no data";
+					continue;
+				}
+				rate = it->second;
+			}
 
 		} catch (std::exception &e) {
 
