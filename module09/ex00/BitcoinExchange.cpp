@@ -7,9 +7,12 @@ BitcoinExchange::BitcoinExchange(const std::string &inputFilePath, const std::st
 	initExchangeRates();
 }
 
+BitcoinExchange::~BitcoinExchange() {}
+
 void BitcoinExchange::run() {
 	if (!isValidData_) {
 		std::cerr << "database is corrupted" << std::endl;
+		return;
 	}
 
 	std::ifstream file(inputFilePath_.c_str());
@@ -19,6 +22,7 @@ void BitcoinExchange::run() {
 	}
 
 	std::string line;
+	std::getline(file, line);
 	while (std::getline(file, line)) {
 		if (line.empty())
 			continue;
@@ -31,7 +35,7 @@ void BitcoinExchange::run() {
 				std::cerr << "Error: not a positive number" << std::endl;
 				continue;
 			}
-			if (value > 100) {
+			if (value > 1000) {
 				std::cerr << "Error: too large " << std::endl;
 				continue;
 			}
@@ -47,9 +51,9 @@ void BitcoinExchange::run() {
 				}
 				rate = it->second;
 			}
-
+			std::cout << date << " => " << value << " = " << rate * value << std::endl;
 		} catch (std::exception &e) {
-
+			std::cerr << "Error: " << e.what() << std::endl;
 		}
 	}
 }
@@ -64,10 +68,39 @@ void BitcoinExchange::initExchangeRates() {
 
 	std::string line;
 	std::getline(file, line);
-
 	while(getline(file, line)) {
-		if ()
+		if (line.empty())
+			continue;
+		try {
+			std::pair<std::string, float> exchangeRate = parseExchangeRateLine(line);
+			exchangeRates_.insert(exchangeRate);
+		} catch (std::exception &e) {
+			std::cerr << "parse error: " << e.what() << std::endl;
+			isValidData_ = false;
+			return;
+		}
 	}
+	isValidData_ = true;
+}
+
+std::pair<std::string, float> BitcoinExchange::parseExchangeRateLine(const std::string &line) throw(std::runtime_error) {
+	std::pair<std::string, std::string> linePair = splitLinePair(line, ',');
+	std::string dateStr = linePair.first;
+	std::string rateStr = linePair.second;
+
+	if (rateStr.find(',') != std::string::npos)
+		throw std::runtime_error("invalid exchange rate line: " + line);
+	if (!isValidDataStr(dateStr))
+		throw std::runtime_error("invalid date string: " + dateStr);
+
+	float rate;
+	try {
+		rate = s2f(rateStr);
+	} catch (std::invalid_argument &e) {
+		throw std::runtime_error("invalid exchange rate: " + rateStr);
+	}
+	
+	return std::pair<std::string, float>(dateStr, rate);
 }
 
 std::pair<std::string, float> BitcoinExchange::parseInputLine(const std::string &line) throw (std::runtime_error) {
@@ -93,7 +126,6 @@ bool BitcoinExchange::isValidDataStr(const std::string &dateStr) {
 		return false;
 	if (dateStr[4] != '-' || dateStr[7] != '-')
 		return false;
-
 	std::string yearStr = dateStr.substr(0, 4);
 	std::string monthStr = dateStr.substr(5, 2);
 	std::string dayStr = dateStr.substr(8);
@@ -149,7 +181,7 @@ float BitcoinExchange::s2f(const std::string &str) throw(std::invalid_argument) 
 	return f;
 }
 
-static std::pair<const std::string, std::string> splitLinePair(const std::string &line, char delimiter) throw(std::runtime_error) {
+std::pair<const std::string, std::string> BitcoinExchange::splitLinePair(const std::string &line, char delimiter) throw(std::runtime_error) {
 	std::string::size_type pos = line.find(delimiter);
 	if (pos == std::string::npos)
 		throw std::runtime_error("invalid line: " + line);
@@ -159,9 +191,9 @@ static std::pair<const std::string, std::string> splitLinePair(const std::string
 }
 
 std::string BitcoinExchange::trim(const std::string &str) {
-	std::string::size_type left = str.find_first_not_of("\t\n\v\f\r");
+	std::string::size_type left = str.find_first_not_of("\t\n\v\f\r ");
 	if (left == std::string::npos)
 		return "";
-	std::string::size_type right = str.find_last_not_of("\t\n\v\f\r");
+	std::string::size_type right = str.find_last_not_of("\t\n\v\f\r ");
 	return str.substr(left, right - left + 1);
 }
