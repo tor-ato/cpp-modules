@@ -3,11 +3,21 @@
 #include <fstream>
 #include <sstream>
 
-BitcoinExchange::BitcoinExchange(const std::string &inputFilePath, const std::string &dataFilePath) : inputFilePath_(inputFilePath), dataFilePath_(dataFilePath) {
+BitcoinExchange::BitcoinExchange(const std::string &inputFilePath, const std::string &dataFilePath) : inputFilePath_(inputFilePath), dataFilePath_(dataFilePath), isValidData_(true) {
 	initExchangeRates();
 }
 
 BitcoinExchange::~BitcoinExchange() {}
+
+BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &other) {
+	if (this != &other) {
+		inputFilePath_ = other.inputFilePath_;
+		dataFilePath_ = other.dataFilePath_;
+		exchangeRates_ = other.exchangeRates_;
+		isValidData_ = other.isValidData_;
+	}
+	return *this;
+}
 
 void BitcoinExchange::run() {
 	if (!isValidData_) {
