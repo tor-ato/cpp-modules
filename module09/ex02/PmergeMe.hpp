@@ -21,9 +21,9 @@ public:
 
 	~PmergeMe();
 
-	static bool parseArgs(int argc, char **argv);
+	bool parseArgs(int argc, char **argv);
 
-	static void run();
+	void run();
 
 private:
 	std::vector<int> vec_;
@@ -35,9 +35,9 @@ private:
 
 	static std::vector<int> getInsertPos(size_t size);
 
-	static void sortVector();
+	void sortVector();
 
-	static void srotDeque();
+	void sortDeque();
 
 	template<typename T>
 	static void printSeq(const T &seq, const std::string &label) {
