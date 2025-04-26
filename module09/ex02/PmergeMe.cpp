@@ -50,34 +50,61 @@ std::vector<int> PmergeMe::getJacob(size_t size) {
 	return jacobsthal;
 }
 
-std::vector <int> PmergeMe::getInsertPos(size_t size){
-	std::vector<int> jacobSeq = getJacob(size);
-	std::vector<int> order;
-	std::vector<bool> used(size, false);
-	used[0] = true;
+std::vector<int> PmergeMe::getInsertPos(size_t size, std::vector<int> jacobSeq) {
+    std::vector<int> order;
+    std::vector<char> used(size, false);  // boolの代わりにcharを使用
+    used[0] = true;
 
-	for (size_t i = 1; i < jacobSeq.size() && jacobSeq[i]; i++) {
-		if (!used[jacobSeq[i]]) {
-			order.push_back(jacobSeq[i]);
-			used[jacobSeq[i]] = true;
-		}
+    for (size_t i = 1; i < jacobSeq.size() && jacobSeq[i]; i++) {
+        if (!used[jacobSeq[i]]) {
+            order.push_back(jacobSeq[i]);
+            used[jacobSeq[i]] = true;
+        }
 
-		for (int j = jacobSeq[i] - 1; j > jacobSeq[i-1]; j--) {
-			if (j < (int)size && !used[j]) {
-				order.push_back(j);
-				used[j] = true;
-			}
-		}
-	}
+        for (int j = jacobSeq[i] - 1; j > jacobSeq[i-1]; j--) {
+            if (j < (int)size && !used[j]) {
+                order.push_back(j);
+                used[j] = true;
+            }
+        }
+    }
 
-	for (size_t i = 1; i < size; i++) {
-		if (!used[i]) {
-			order.push_back(i);
-		}
-	}
+    for (size_t i = 1; i < size; i++) {
+        if (!used[i]) {
+            order.push_back(i);
+        }
+    }
 
-	return order;
+    return order;
 }
+
+// std::vector <int> PmergeMe::getInsertPos(size_t size, std::vector<int> jacobSeq){
+// 	std::vector<int> order;
+// 	std::vector<bool> used(size, false);
+// 	used[0] = true;
+//
+// 	for (size_t i = 1; i < jacobSeq.size() && jacobSeq[i]; i++) {
+// 		if (!used[jacobSeq[i]]) {
+// 			order.push_back(jacobSeq[i]);
+// 			used[jacobSeq[i]] = true;
+// 		}
+//
+// 		for (int j = jacobSeq[i] - 1; j > jacobSeq[i-1]; j--) {
+// 			if (j < (int)size && !used[j]) {
+// 				order.push_back(j);
+// 				used[j] = true;
+// 			}
+// 		}
+// 	}
+//
+// 	for (size_t i = 1; i < size; i++) {
+// 		if (!used[i]) {
+// 			order.push_back(i);
+// 		}
+// 	}
+//
+// 	return order;
+// }
 
 
 void PmergeMe::sortVector() {
@@ -120,25 +147,31 @@ void PmergeMe::sortVector() {
 		pendChain.push_back(pairs[i].second);
 	}
 
+	if (hasStraaggler)
+		pendChain.push_back(straggler);
+
 	if (!pendChain.empty()) {
 		std::vector<int>::iterator pos = std::lower_bound(result.begin(), result.end(), pendChain[0]);
 		result.insert(pos, pendChain[0]);
 	}
 
 	if (pendChain.size() > 1) {
-		std::vector<int> insertionOrder = getInsertPos(pendChain.size());
+		size_t size = pendChain.size();
+		std::vector<int> jacobSeq = getJacob(size);
+		std::vector<int> insertionOrder = getInsertPos(size, jacobSeq);
+
+		int j = 1;
 		for (size_t i = 0; i < insertionOrder.size(); i++) {
 			int idx = insertionOrder[i];
-			if (idx > 0 && idx < (int)pendChain.size()){
-				std::vector<int>::iterator pos = std::lower_bound(result.begin(), result.end(), pendChain[idx]);
+			int jdx = jacobSeq[j];
+		if (idx > 0 && idx < (int)pendChain.size()){
+				std::vector<int>::iterator pos = std::lower_bound(result.begin(), result.begin() + jdx + 1, pendChain[idx]);
+
 				result.insert(pos, pendChain[idx]);
 			}
+			if (idx > jdx)
+				j++;
 		}
-	}
-
-	if (hasStraaggler) {
-		std::vector<int>::iterator pos = std::lower_bound(result.begin(), result.end(), straggler);
-		result.insert(pos, straggler);
 	}
 
 	vec_ = result;
@@ -184,26 +217,51 @@ void PmergeMe::sortDeque() {
 		pendChain.push_back(pairs[i].second);
 	}
 
+	if (hasStraaggler)
+		pendChain.push_back(straggler);
+
 	if (!pendChain.empty()) {
 		std::deque<int>::iterator pos = std::lower_bound(result.begin(), result.end(), pendChain[0]);
 		result.insert(pos, pendChain[0]);
 	}
 
 	if (pendChain.size() > 1) {
-		std::vector<int> insertionOrder = getInsertPos(pendChain.size());
+		size_t size = pendChain.size();
+		std::vector<int> jacobSeq = getJacob(size);
+		std::vector<int> insertionOrder = getInsertPos(size, jacobSeq);
+
+		int j = 1;
 		for (size_t i = 0; i < insertionOrder.size(); i++) {
 			int idx = insertionOrder[i];
+			int jdx = jacobSeq[j];
 			if (idx > 0 && idx < (int)pendChain.size()){
-				std::deque<int>::iterator pos = std::lower_bound(result.begin(), result.end(), pendChain[idx]);
+				std::deque<int>::iterator pos = std::lower_bound(result.begin(), result.begin() + jdx + 1, pendChain[idx]);
+
 				result.insert(pos, pendChain[idx]);
 			}
+			if (idx > jdx)
+				j++;
 		}
 	}
 
-	if (hasStraaggler) {
-		std::deque<int>::iterator pos = std::lower_bound(result.begin(), result.end(), straggler);
-		result.insert(pos, straggler);
-	}
+	//
+	// if (pendChain.size() > 1) {
+	// 	size_t size = pendChain.size();
+	// 	std::vector<int> jacobSeq = getJacob(size);
+	// 	std::vector<int> insertionOrder = getInsertPos(size, jacobSeq);
+	//
+	// 	int j = 0;
+	// 	for (size_t i = 0; i < insertionOrder.size(); i++) {
+	// 		int idx = insertionOrder[i];
+	// 		int jdx = jacobSeq[j];
+	// 		if (idx > 0 && idx < (int)pendChain.size()){
+	// 			std::deque<int>::iterator pos = std::lower_bound(result.begin(), result.begin() + jdx, pendChain[idx]);
+	// 			result.insert(pos, pendChain[idx]);
+	// 		}
+	// 		if (idx > jdx)
+	// 			j++;
+	// 	}
+	// }
 
 	deq_ = result;
 }
@@ -223,34 +281,33 @@ void PmergeMe::run() {
 	double deqTime = static_cast<double> (deqEnd - deqStart) / CLOCKS_PER_SEC * 1000000;
 
 	
-	// for (size_t i = 1; i < vec_.size(); i++) {
-	//        if (vec_[i] < vec_[i - 1])
-	//        {
-	//            std::cerr << "Error: std::vector is no sorted" << std::endl;
-	//            return;
-	//        }
-	//    }
-	//
-	//
+	for (size_t i = 1; i < vec_.size(); i++) {
+		if (vec_[i] < vec_[i - 1]) {
+			std::cerr << "Error: std::vector is not sorted" << std::endl;
+			return;
+		}
+}
+
+
 	// for (size_t i = 1; i < deq_.size(); i++) {
 	//        if (deq_[i] < deq_[i - 1])
 	//        {
-	//            std::cerr << "Error: std::deque is no sorted" << std::endl;
+	//            std::cerr << "Error: std::deque is not sorted" << std::endl;
 	//            return;
 	//        }
 	//    }
-	//
 
-	printSeq(original, "Befor");
-	printSeq(vec_, "After");
 
-    std::cout << "Time to process a range of " << vec_.size()
-              << " elements with std::vector : " << std::fixed << std::setprecision(5)
-              << vecTime << " us" << std::endl;
+		printSeq(original, "Befor");
+		printSeq(vec_, "After");
 
-    std::cout << "Time to process a range of " << vec_.size()
-              << " elements with std::deque : " << std::fixed << std::setprecision(5)
-              << deqTime << " us" << std::endl;
+		std::cout << "Time to process a range of " << vec_.size()
+	             << " elements with std::vector : " << std::fixed << std::setprecision(5)
+	             << vecTime << " us" << std::endl;
+
+		std::cout << "Time to process a range of " << deq_.size()
+	             << " elements with std::deque : " << std::fixed << std::setprecision(5)
+	             << deqTime << " us" << std::endl;
 }
 
 int PmergeMe::s2i(const std::string &str) throw(std::invalid_argument) {

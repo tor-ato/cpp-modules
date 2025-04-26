@@ -33,7 +33,7 @@ private:
 
 	static std::vector<int> getJacob(size_t size);
 
-	static std::vector<int> getInsertPos(size_t size);
+	static std::vector <int> getInsertPos(size_t size, std::vector<int> jacobSeq);
 
 	void sortVector();
 
@@ -50,3 +50,4 @@ private:
 		std::cout << std::endl;
 	}
 };
+
