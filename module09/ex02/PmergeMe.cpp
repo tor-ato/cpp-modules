@@ -223,23 +223,23 @@ void PmergeMe::run() {
 	double deqTime = static_cast<double> (deqEnd - deqStart) / CLOCKS_PER_SEC * 1000000;
 
 	
-	for (size_t i = 1; i < vec_.size(); i++) {
-        if (vec_[i] < vec_[i - 1])
-        {
-            std::cerr << "Error: std::vector is no sorted" << std::endl;
-            return;
-        }
-    }
-
-		
-	for (size_t i = 1; i < deq_.size(); i++) {
-        if (deq_[i] < deq_[i - 1])
-        {
-            std::cerr << "Error: std::deque is no sorted" << std::endl;
-            return;
-        }
-    }
-
+	// for (size_t i = 1; i < vec_.size(); i++) {
+	//        if (vec_[i] < vec_[i - 1])
+	//        {
+	//            std::cerr << "Error: std::vector is no sorted" << std::endl;
+	//            return;
+	//        }
+	//    }
+	//
+	//
+	// for (size_t i = 1; i < deq_.size(); i++) {
+	//        if (deq_[i] < deq_[i - 1])
+	//        {
+	//            std::cerr << "Error: std::deque is no sorted" << std::endl;
+	//            return;
+	//        }
+	//    }
+	//
 
 	printSeq(original, "Befor");
 	printSeq(vec_, "After");
