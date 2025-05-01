@@ -2,8 +2,8 @@ NAME := PmergeMe
 SRC := $(wildcard *.cpp)
 OBJ := $(SRC:.cpp=.o)
 
-CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98
+CXX := g++
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -g
 
 .PHONY: all
 all: $(NAME)
