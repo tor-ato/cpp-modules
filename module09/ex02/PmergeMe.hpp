@@ -13,12 +13,12 @@
 
 typedef struct s_pairVct {
 	int num;
-	std::vector<s_pairVct> pair;
+	std::vector<s_pairVct> pairs;
 }	t_pairVct;
 
 typedef struct s_pairDeq {
 	int num;
-	std::deque<s_pairDeq> pair;
+	std::deque<s_pairDeq> pairs;
 }	t_pairDeq;
 
 class PmergeMe {

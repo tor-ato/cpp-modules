@@ -36,7 +36,6 @@ void PmergeMe::validate(int ac, char **av) {
 	}
 }
 
-
 void PmergeMe::printContainer(const std::string &title, const std::vector<t_pairVct> &container) {
 	std::cout << title;
 	for (size_t i = 0; i < container.size(); ++i)
@@ -50,11 +49,10 @@ void PmergeMe::printTime(int size, const std::string &container, std::clock_t so
 	std::cout << "Time to process a range of " << size <<  " elements"
 			  << " with std::" << container << ": "
 			  <<  time <<  " µs"
-			  // << "    Comparison Count:" << count
+			  << "    Comparison Count:" << count
 			  << std::endl;
 	(void)count;
 }
-
 
 void PmergeMe::initVct(int ac, char **av) {
 	int num;
@@ -73,18 +71,18 @@ void PmergeMe::createPairs(std::vector<t_pairVct> &pairs, std::vector<t_pairVct>
 	for (size_t i = 0; i < vct.size(); i +=2) {
 		g_counterVct++;
 		if (vct[i].num > vct[i + 1].num) {
-			vct[i].pair.push_back(vct[i + 1]);
+			vct[i].pairs.push_back(vct[i + 1]);
 			pairs.push_back(vct[i]);
 		} else {
-			vct[i + 1].pair.push_back(vct[i]);
+			vct[i + 1].pairs.push_back(vct[i]);
 			pairs.push_back(vct[i + 1]);
 		}
 	}
 }
 
 void PmergeMe::insertFirstElement(std::vector<t_pairVct> &mainChain) {
-	t_pairVct first = mainChain[0].pair.back();
-	mainChain[0].pair.pop_back();
+	t_pairVct first = mainChain[0].pairs.back();
+	mainChain[0].pairs.pop_back();
 	mainChain.insert(mainChain.begin(), first);
 }
 
@@ -120,13 +118,12 @@ std::vector<int> PmergeMe::getIndexVct(int size) {
 			num = size + 1 - total;
 		for ( ; num > 0; num--)
 			idx.push_back(total + num);
-		total += js[i];
+		total += js2[i];
 	}
 	return idx;
 }
 
 void PmergeMe::createInsertElements(std::vector<t_pairVct> &insertFirstElement, std::vector<t_pairVct> &mainChain, t_pairVct &lastOne) {
-	// int size = mainChain.size() - 1 + (lastOne.num == -1 ? 0 : 1);
 	int size = mainChain.size() - 2 + (lastOne.num == -1 ? 0 : 1);
 	std::vector<int> index = getIndexVct(size);
 	t_pairVct tmp;
@@ -134,13 +131,13 @@ void PmergeMe::createInsertElements(std::vector<t_pairVct> &insertFirstElement, 
 	for (size_t i = 0; i < index.size(); ++i) {
 		if (static_cast<size_t>(index[i]) < mainChain.size()) {
 			tmp = mainChain[index[i]];
-			mainChain[index[i]].pair.pop_back();
+			mainChain[index[i]].pairs.pop_back();
 		} else {
 			tmp.num = DUMMY;
-			tmp.pair.push_back(lastOne);
+			tmp.pairs.push_back(lastOne);
 		}
 		insertFirstElement.push_back(tmp);
-		tmp.pair.clear();
+		tmp.pairs.clear();
 	}
 }
 
@@ -150,9 +147,9 @@ bool PmergeMe::compVctElements(const t_pairVct &first, const t_pairVct &second) 
 }
 
 void PmergeMe::binarySearchInsert(std::vector<t_pairVct> &mainChain, t_pairVct &insertElement, int large) {
-	std::vector<t_pairVct>:: iterator end;
-	for (end = mainChain.begin(); end->num != large; ++end) {}
-	mainChain.insert(std::lower_bound(mainChain.begin(), end, insertElement, compVctElements), insertElement);
+	std::vector<t_pairVct>:: iterator untillMainChainPair;
+	for (untillMainChainPair = mainChain.begin(); untillMainChainPair->num != large; ++untillMainChainPair) {}
+	mainChain.insert(std::lower_bound(mainChain.begin(), untillMainChainPair, insertElement, compVctElements), insertElement);
 }
 
 void PmergeMe::insertBasedOnJacobsthal(const std::vector<t_pairVct> &insetElements, std::vector<t_pairVct> &mainChain) {
@@ -160,7 +157,7 @@ void PmergeMe::insertBasedOnJacobsthal(const std::vector<t_pairVct> &insetElemen
 	int large;
 
 	for (size_t i = 0; i < insetElements.size(); ++i) {
-		insertElement = insetElements[i].pair.back();
+		insertElement = insetElements[i].pairs.back();
 		large = insetElements[i].num;
 		if (large != -1)
 			binarySearchInsert(mainChain, insertElement, large);
