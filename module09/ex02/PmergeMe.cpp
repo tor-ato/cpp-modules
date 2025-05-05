@@ -49,7 +49,7 @@ void PmergeMe::printTime(int size, const std::string &container, std::clock_t so
 	std::cout << "Time to process a range of " << size <<  " elements"
 			  << " with std::" << container << ": "
 			  <<  time <<  " µs"
-			  << "    Comparison Count:" << count
+			  // << "    Comparison Count:" << count
 			  << std::endl;
 	(void)count;
 }
@@ -194,20 +194,161 @@ std::vector<t_pairVct> PmergeMe::mergeInsertSortVct(std::vector<t_pairVct> &vct)
 	return mainChain;
 }
 
+void PmergeMe::initDeq(int ac, char **av) {
+	int num;
+	t_pairDeq tmpDeq;
+
+	for (int i = 1; i < ac; i++) {
+		std::istringstream iss(av[i]);
+		iss >> num;
+		tmpDeq.num = num;
+		deq_.push_back(tmpDeq);
+	}
+}
+
+void PmergeMe::createPairs(std::deque<t_pairDeq> &pairs, std::deque<t_pairDeq> Deq) {
+	t_pairDeq tmp;
+	for (size_t i = 0; i < Deq.size(); i +=2) {
+		g_counterDeq++;
+		if (Deq[i].num > Deq[i + 1].num) {
+			Deq[i].pairs.push_back(Deq[i + 1]);
+			pairs.push_back(Deq[i]);
+		} else {
+			Deq[i + 1].pairs.push_back(Deq[i]);
+			pairs.push_back(Deq[i + 1]);
+		}
+	}
+}
+
+void PmergeMe::insertFirstElement(std::deque<t_pairDeq> &mainChain) {
+	t_pairDeq first = mainChain[0].pairs.back();
+	mainChain[0].pairs.pop_back();
+	mainChain.insert(mainChain.begin(), first);
+}
+
+std::deque<int> PmergeMe::getJacobStahlNumDeq(int size) {
+	std::deque<int> jacovStahl;
+	int total = 1;
+	if (size > 0)
+		jacovStahl.push_back(0);
+	if (size >= 1)
+		jacovStahl.push_back(1);
+	for (int i = 2; total * 2 < size; ++i) {
+		int num = jacovStahl[i - 1] + 2 * jacovStahl[i - 2];
+		jacovStahl.push_back(num);
+		total += num;
+	}
+	return jacovStahl;
+}
+
+std::deque<int> PmergeMe::getIndexDeq(int size) {
+ 	std::deque<int> js;
+	std::deque<int> js2;
+	std::deque<int> idx;
+
+	js = getJacobStahlNumDeq(size);
+
+	for (size_t i = 0; i < js.size(); ++i)
+		js2.push_back(js[i] * 2);
+
+	int total = 1;
+	for (size_t i = 1; i < js2.size(); ++i) {
+		int num = js2[i];
+		if (total + num > size + 1)
+			num = size + 1 - total;
+		for ( ; num > 0; num--)
+			idx.push_back(total + num);
+		total += js2[i];
+	}
+	return idx;
+}
+
+void PmergeMe::createInsertElements(std::deque<t_pairDeq> &insertFirstElement, std::deque<t_pairDeq> &mainChain, t_pairDeq &lastOne) {
+	int size = mainChain.size() - 2 + (lastOne.num == -1 ? 0 : 1);
+	std::deque<int> index = getIndexDeq(size);
+	t_pairDeq tmp;
+
+	for (size_t i = 0; i < index.size(); ++i) {
+		if (static_cast<size_t>(index[i]) < mainChain.size()) {
+			tmp = mainChain[index[i]];
+			mainChain[index[i]].pairs.pop_back();
+		} else {
+			tmp.num = DUMMY;
+			tmp.pairs.push_back(lastOne);
+		}
+		insertFirstElement.push_back(tmp);
+		tmp.pairs.clear();
+	}
+}
+
+bool PmergeMe::compDeqElements(const t_pairDeq &first, const t_pairDeq &second) {
+	g_counterDeq++;
+	return (first.num < second.num);
+}
+
+void PmergeMe::binarySearchInsert(std::deque<t_pairDeq> &mainChain, t_pairDeq &insertElement, int large) {
+	std::deque<t_pairDeq>:: iterator untillMainChainPair;
+	for (untillMainChainPair = mainChain.begin(); untillMainChainPair->num != large; ++untillMainChainPair) {}
+	mainChain.insert(std::lower_bound(mainChain.begin(), untillMainChainPair, insertElement, compDeqElements), insertElement);
+}
+
+void PmergeMe::insertBasedOnJacobsthal(const std::deque<t_pairDeq> &insetElements, std::deque<t_pairDeq> &mainChain) {
+	t_pairDeq insertElement;
+	int large;
+
+	for (size_t i = 0; i < insetElements.size(); ++i) {
+		insertElement = insetElements[i].pairs.back();
+		large = insetElements[i].num;
+		if (large != -1)
+			binarySearchInsert(mainChain, insertElement, large);
+		else
+			mainChain.insert(std::lower_bound(mainChain.begin(), mainChain.end(), insertElement, compDeqElements), insertElement);
+	}
+}
+
+std::deque<t_pairDeq> PmergeMe::mergeInsertSortDeq(std::deque<t_pairDeq> &Deq) {
+	if (Deq.size() < 2)
+		return (Deq);
+
+	int oddNumber = Deq.size() % 2;
+	t_pairDeq lastOne;
+	lastOne.num = -1;
+	if (oddNumber) {
+		lastOne = Deq.back();
+		Deq.pop_back();
+	}
+
+	std::deque<t_pairDeq> pairs;
+	createPairs(pairs, Deq);
+
+	std::deque<t_pairDeq> mainChain = mergeInsertSortDeq(pairs);
+
+	insertFirstElement(mainChain);
+
+	std::deque<t_pairDeq> insertElements;
+	createInsertElements(insertElements, mainChain, lastOne);
+
+	if (!insertElements.empty())
+		insertBasedOnJacobsthal(insertElements, mainChain);
+
+	return mainChain;
+}
+
+
 void PmergeMe::excutePmergeMe(int ac, char **av) {
 	std::clock_t startVct = std::clock();
 	initVct(ac, av);
 	vct_ = mergeInsertSortVct(vct_);
 	std::clock_t timeVct = std::clock() - startVct;
 
-	// std::clock_t startDeq = std::clock();
-	// initDeq(ac, av);
-	// deq_ = mergeInsertSortDeq(deq_);
-	// std::clock_t timeDeq = std::clock() - startDeq;
+	std::clock_t startDeq = std::clock();
+	initDeq(ac, av);
+	deq_ = mergeInsertSortDeq(deq_);
+	std::clock_t timeDeq = std::clock() - startDeq;
 
 	printContainer("Before: ", before_);
 	printContainer("After: ", vct_);
 
 	printTime(vct_.size(), "vector", timeVct, g_counterVct);
-	// printTime(deq_.size(), "deque", timeDeq, g_counterDeq);
+	printTime(deq_.size(), "deque", timeDeq, g_counterDeq);
 }
