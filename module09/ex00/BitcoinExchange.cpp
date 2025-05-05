@@ -55,11 +55,10 @@ void BitcoinExchange::run() {
 				rate = exchangeRates_.at(date);
 			} else {
 				std::map<std::string, float>::iterator it = exchangeRates_.lower_bound(date);
-				if (it == exchangeRates_.end()) {
-					std::cerr << "Error: there is no data";
-					continue;
-				}
-				rate = it->second;
+				if (it == exchangeRates_.end())
+					rate = exchangeRates_.rbegin()->second;
+				else 
+					rate = it->second;
 			}
 			std::cout << date << " => " << value << " = " << rate * value << std::endl;
 		} catch (std::exception &e) {
