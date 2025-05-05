@@ -146,21 +146,21 @@ bool PmergeMe::compVctElements(const t_pairVct &first, const t_pairVct &second) 
 	return (first.num < second.num);
 }
 
-void PmergeMe::binarySearchInsert(std::vector<t_pairVct> &mainChain, t_pairVct &insertElement, int large) {
-	std::vector<t_pairVct>:: iterator untillMainChainPair;
-	for (untillMainChainPair = mainChain.begin(); untillMainChainPair->num != large; ++untillMainChainPair) {}
-	mainChain.insert(std::lower_bound(mainChain.begin(), untillMainChainPair, insertElement, compVctElements), insertElement);
+void PmergeMe::binarySearchInsert(std::vector<t_pairVct> &mainChain, t_pairVct &insertElement, int MainChainPairNum) {
+	std::vector<t_pairVct>:: iterator untillMainChainPairNum;
+	for (untillMainChainPairNum = mainChain.begin(); untillMainChainPairNum->num != MainChainPairNum; ++untillMainChainPairNum) {}
+	mainChain.insert(std::lower_bound(mainChain.begin(), untillMainChainPairNum, insertElement, compVctElements), insertElement);
 }
 
 void PmergeMe::insertBasedOnJacobsthal(const std::vector<t_pairVct> &insetElements, std::vector<t_pairVct> &mainChain) {
 	t_pairVct insertElement;
-	int large;
+	int MainChainPairNum;
 
 	for (size_t i = 0; i < insetElements.size(); ++i) {
 		insertElement = insetElements[i].pairs.back();
-		large = insetElements[i].num;
-		if (large != -1)
-			binarySearchInsert(mainChain, insertElement, large);
+		MainChainPairNum = insetElements[i].num;
+		if (MainChainPairNum != -1)
+			binarySearchInsert(mainChain, insertElement, MainChainPairNum);
 		else
 			mainChain.insert(std::lower_bound(mainChain.begin(), mainChain.end(), insertElement, compVctElements), insertElement);
 	}
@@ -286,21 +286,21 @@ bool PmergeMe::compDeqElements(const t_pairDeq &first, const t_pairDeq &second) 
 	return (first.num < second.num);
 }
 
-void PmergeMe::binarySearchInsert(std::deque<t_pairDeq> &mainChain, t_pairDeq &insertElement, int large) {
-	std::deque<t_pairDeq>:: iterator untillMainChainPair;
-	for (untillMainChainPair = mainChain.begin(); untillMainChainPair->num != large; ++untillMainChainPair) {}
-	mainChain.insert(std::lower_bound(mainChain.begin(), untillMainChainPair, insertElement, compDeqElements), insertElement);
+void PmergeMe::binarySearchInsert(std::deque<t_pairDeq> &mainChain, t_pairDeq &insertElement, int MainChainPairNum) {
+	std::deque<t_pairDeq>:: iterator untillMainChainPairNum;
+	for (untillMainChainPairNum = mainChain.begin(); untillMainChainPairNum->num != MainChainPairNum; ++untillMainChainPairNum) {}
+	mainChain.insert(std::lower_bound(mainChain.begin(), untillMainChainPairNum, insertElement, compDeqElements), insertElement);
 }
 
 void PmergeMe::insertBasedOnJacobsthal(const std::deque<t_pairDeq> &insetElements, std::deque<t_pairDeq> &mainChain) {
 	t_pairDeq insertElement;
-	int large;
+	int MainChainPairNum;
 
 	for (size_t i = 0; i < insetElements.size(); ++i) {
 		insertElement = insetElements[i].pairs.back();
-		large = insetElements[i].num;
-		if (large != -1)
-			binarySearchInsert(mainChain, insertElement, large);
+		MainChainPairNum = insetElements[i].num;
+		if (MainChainPairNum != -1)
+			binarySearchInsert(mainChain, insertElement, MainChainPairNum);
 		else
 			mainChain.insert(std::lower_bound(mainChain.begin(), mainChain.end(), insertElement, compDeqElements), insertElement);
 	}
